@@ -15,7 +15,8 @@ config :soup, SoupWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "vP1L0cZ2tSB17HMI9IqQtZaY0wiPGfeRWi6IYtdSDWCgP67uBkT9A4beBxRv8iAA",
   render_errors: [view: SoupWeb.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: Soup.PubSub, adapter: Phoenix.PubSub.PG2]
+  pubsub: [name: Soup.PubSub, adapter: Phoenix.PubSub.PG2],
+  live_view: [signing_salt: "ClOvIsbURwzt7ce/W+IcPxkKx0ZyQvw53HlkgdR77hIjlhA3dIo6bjGLrcPcCPwP"]
 
 # Configures Elixir's Logger
 config :logger, :console,
@@ -23,7 +24,9 @@ config :logger, :console,
   metadata: [:request_id]
 
 # Use Jason for JSON parsing in Phoenix
-config :phoenix, :json_library, Jason
+config :phoenix,
+  json_library: Jason,
+  template_engines: [leex: Phoenix.LiveView.Engine]
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

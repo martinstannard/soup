@@ -39,6 +39,9 @@ defmodule SoupWeb do
       # Use all HTML functionality (forms, tags, etc)
       use Phoenix.HTML
 
+      # import liveview renderers
+      import Phoenix.LiveView, only: [live_render: 2, live_render: 3]
+
       import SoupWeb.ErrorHelpers
       import SoupWeb.Gettext
       alias SoupWeb.Router.Helpers, as: Routes
@@ -50,6 +53,7 @@ defmodule SoupWeb do
       use Phoenix.Router
       import Plug.Conn
       import Phoenix.Controller
+      import Phoenix.LiveView.Router
     end
   end
 
