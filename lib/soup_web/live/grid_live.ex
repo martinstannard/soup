@@ -1,56 +1,19 @@
-defmodule SoupWeb.CountView do
+defmodule SoupWeb.GridLive do
   use Phoenix.LiveView
 
   alias Soup.Player
   alias Soup.PlayerServer
+  alias SoupWeb.GridView
 
   def render(assigns) do
-    ~L"""
-    <h2>Time: <%= @seconds %></h2>
-    <div class="">
-      <%= Enum.map(@grid, fn(row) -> %>
-        <div>
-          <%= Enum.map(row, fn(c) -> %>
-            <span class='letter' phx-click="letter" phx-value=<%= c%>><%= c %></span>
-          <% end) %>
-        </div>
-      <% end) %>
-
-      <div class='word'>
-        <%= @word %>
-      </div>
-      <div>
-        <button phx-click="submit">submit</button>
-      </div>
-      <div>
-        <button phx-click="clear">clear</button>
-      </div>
-      <h2>Score: <%= @score %></h2>
-      <div>
-      <h2>Words</h2>
-        <%= Enum.map(@words, fn(w) -> %>
-          <div><%= w %></div>
-        <% end) %>
-      </div>
-      <div>
-      <h2>Scores</h2>
-        <%= Enum.map(@scores, fn(score) -> %>
-          <div><%= score %></div>
-        <% end) %>
-      </div>
-    </div>
-    """
+    GridView.render("grid.html", assigns)
   end
 
   def mount(_session, socket) do
+    IO.inspect("Mounting #{socket.id}")
     if connected?(socket), do: SoupWeb.Endpoint.subscribe("soup")
-    socket = assign(socket, :word, "")
-    socket = assign(socket, :words, [])
-    socket = assign(socket, :score, 0)
-    socket = assign(socket, :seconds, 30)
-    socket = assign(socket, :scores, [])
-    socket = assign(socket, :grid, GenServer.call(Board, :grid))
-    socket = assign(socket, :pid, PlayerServer.find_or_create_player(socket.id))
+    socket = init_socket(socket)
+    SoupWeb.Endpoint.broadcast("soup", "scores", %{scores: PlayerServer.scores()})
 
     {:ok, socket}
   end
@@ -89,8 +52,10 @@ defmodule SoupWeb.CountView do
     {:noreply, socket}
   end
 
-  def terminate(_reason, socket) do
+  def terminate(reason, socket) do
+    IO.inspect(reason, label: :terminate)
     PlayerServer.remove(socket.assigns.pid)
+    SoupWeb.Endpoint.broadcast("soup", "scores", %{scores: PlayerServer.scores()})
   end
 
   def assign_state(socket) do
@@ -106,7 +71,6 @@ defmodule SoupWeb.CountView do
     state = Player.state(socket.assigns.pid)
 
     GenServer.call(Dict, {:valid?, state.word})
-    |> IO.inspect(label: :valid)
   end
 
   defp handle_valid(true, socket) do
@@ -116,5 +80,16 @@ defmodule SoupWeb.CountView do
 
   defp handle_valid(_, socket) do
     Player.clear(socket.assigns.pid)
+  end
+
+  defp init_socket(socket) do
+    socket = assign(socket, :word, "")
+    socket = assign(socket, :words, [])
+    socket = assign(socket, :score, 0)
+    socket = assign(socket, :seconds, 30)
+    socket = assign(socket, :scores, [])
+    socket = assign(socket, :grid, GenServer.call(Board, :grid))
+    socket = assign(socket, :pid, PlayerServer.find_or_create_player(socket.id))
+    socket
   end
 end

@@ -2,22 +2,43 @@
 
 @import "./phoenix.css";
 
+body {
+  background-color: #E9F2F9;
+}
+
+header {
+  background-color: #3A89C9;
+  color: white;
+}
+
 .letter {
-  background-color: #cdaecd;
-  border: 3px solid #c07014;
+  color: #1B325F;
+  background-color: #9CC4E4;
+  border: 3px solid #3A89C9;
   font-family: monospace;
-  font-size: 5em;
+  font-size: 7em;
   font-weight: 900;
   line-height: 1.3;
   padding-left: 0.2em;
   padding-right: 0.2em;
 }
 .word {
-  background-color: #DBBBBB;
   font-family: monospace;
-  font-size: 5em;
+  font-size: 3em;
   font-weight: 900;
   line-height: 1.3;
   padding-left: 0.2em;
   padding-right: 0.2em;
+  min-height: 2em;
 }
+
+#board {
+  float:left;
+  width:70%;
+  overflow:hidden;
+}
+#info {
+  float:left;
+  width:30%;
+  overflow:hidden;
+} 

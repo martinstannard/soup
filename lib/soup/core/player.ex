@@ -1,5 +1,5 @@
 defmodule Soup.Player do
-  use GenServer
+  use GenServer, restart: :transient
 
   def start_link(id) do
     GenServer.start_link(__MODULE__, id, [])
@@ -77,6 +77,7 @@ defmodule Soup.Player do
   end
 
   def handle_call(:id, _, state) do
+    IO.inspect(state.id)
     {:reply, state.id, state}
   end
 end

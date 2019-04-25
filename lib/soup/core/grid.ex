@@ -38,7 +38,6 @@ defmodule Soup.Grid do
 
   def handle_info(:tick, state) do
     new_state = do_tick(state)
-    IO.inspect(new_state.time)
     Process.send_after(self(), :tick, 1000)
     {:noreply, new_state}
   end

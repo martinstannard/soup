@@ -1,0 +1,42 @@
+<div id="board">
+  <div class="grid">
+    <%= Enum.map(@grid, fn(row) -> %>
+      <div>
+        <%= Enum.map(row, fn(c) -> %>
+          <span class='letter' phx-click="letter" phx-value=<%= c%>><%= c %></span>
+        <% end) %>
+      </div>
+    <% end) %>
+  </div>
+
+  <p>
+  Choose letters from the grid to make words and score points. Minimum 4 letters.
+  </p>
+  
+</div>
+
+<div id="info">
+  <div class='word'>
+    <%= @word %>
+  </div>
+  <div>
+    <button phx-click="submit">submit</button>
+    <button phx-click="clear">clear</button>
+  </div>
+  <h2>Board change in <%= @seconds %></h2>
+  <div id="scores">
+    <h2>Scores</h2>
+    <ol>
+    <%= Enum.map(@scores, fn(score) -> %>
+      <li><%= score %></li>
+    <% end) %>
+    </ol>
+  </div>
+  <div id="player">
+    <h2>Your Score: <%= @score %></h2>
+    <h2>Your Words</h2>
+    <%= Enum.map(@words, fn(w) -> %>
+      <div><%= w %></div>
+    <% end) %>
+  </div>
+</div>
