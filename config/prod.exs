@@ -14,6 +14,7 @@ config :soup, SoupWeb.Endpoint,
   url: [scheme: "https", host: "lettersoup", port: 443],
   force_ssl: [rewrite_on: [:x_forwarded_proto]],
   cache_static_manifest: "priv/static/cache_manifest.json",
+  check_origin: ["//localhost", "//lettersoup.heroku.com"],
   secret_key_base: Map.fetch!(System.get_env(), "SECRET_KEY_BASE")
 
 # Configure your database
