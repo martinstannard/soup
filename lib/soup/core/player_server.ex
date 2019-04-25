@@ -36,6 +36,13 @@ defmodule Soup.PlayerServer do
     DynamicSupervisor.terminate_child(__MODULE__, pid)
   end
 
+  def scores do
+    players()
+    |> Enum.map(fn pid ->
+      Player.score(pid)
+    end)
+  end
+
   ###
   # Supervisor API
   ###

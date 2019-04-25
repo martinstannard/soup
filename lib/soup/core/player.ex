@@ -25,6 +25,10 @@ defmodule Soup.Player do
     GenServer.call(pid, :state)
   end
 
+  def score(pid) do
+    GenServer.call(pid, :score)
+  end
+
   def id(pid) do
     GenServer.call(pid, :id)
   end
@@ -66,6 +70,10 @@ defmodule Soup.Player do
 
   def handle_call(:state, _, state) do
     {:reply, state, state}
+  end
+
+  def handle_call(:score, _, state) do
+    {:reply, state.score, state}
   end
 
   def handle_call(:id, _, state) do

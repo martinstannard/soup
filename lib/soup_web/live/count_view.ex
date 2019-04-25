@@ -32,6 +32,12 @@ defmodule SoupWeb.CountView do
           <div><%= w %></div>
         <% end) %>
       </div>
+      <div>
+      <h2>Scores</h2>
+        <%= Enum.map(@scores, fn(score) -> %>
+          <div><%= score %></div>
+        <% end) %>
+      </div>
     </div>
     """
   end
@@ -42,6 +48,7 @@ defmodule SoupWeb.CountView do
     socket = assign(socket, :words, [])
     socket = assign(socket, :score, 0)
     socket = assign(socket, :seconds, 30)
+    socket = assign(socket, :scores, [])
     socket = assign(socket, :grid, GenServer.call(Board, :grid))
     socket = assign(socket, :pid, PlayerServer.find_or_create_player(socket.id))
 
@@ -77,8 +84,12 @@ defmodule SoupWeb.CountView do
     {:noreply, socket}
   end
 
-  def terminate(reason, socket) do
-    IO.inspect(reason)
+  def handle_info(%{event: "scores", payload: payload}, socket) do
+    socket = assign(socket, :scores, payload.scores)
+    {:noreply, socket}
+  end
+
+  def terminate(_reason, socket) do
     PlayerServer.remove(socket.assigns.pid)
   end
 
@@ -87,6 +98,7 @@ defmodule SoupWeb.CountView do
     socket = assign(socket, :word, state.word)
     socket = assign(socket, :words, state.words)
     socket = assign(socket, :score, state.score)
+    SoupWeb.Endpoint.broadcast("soup", "scores", %{scores: PlayerServer.scores()})
     socket
   end
 

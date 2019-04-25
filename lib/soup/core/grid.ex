@@ -2,7 +2,7 @@ defmodule Soup.Grid do
   use GenServer
 
   @sides 5
-  @countdown 10
+  @countdown 60
   @letters "EEEEEEEEEEEETTTTTTTTTAAAAAAAAOOOOOOOIIIIIIINNNNNNNSSSSSSSHHHHHHRRRRRRDDDDLLLCCCUUUMMMWWWFFFGGYYPPBBVKJXQZ"
 
   def start_link(_opts) do
