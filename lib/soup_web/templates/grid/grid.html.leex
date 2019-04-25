@@ -12,6 +12,9 @@
   <p>
   Choose letters from the grid to make words and score points. Minimum 4 letters.
   </p>
+  <p>
+  Grid resets every 60 seconds.
+  </p>
   
 </div>
 
@@ -23,18 +26,16 @@
     <button phx-click="submit">submit</button>
     <button phx-click="clear">clear</button>
   </div>
-  <h2>Board change in <%= @seconds %></h2>
+  <h2>Score: <%= @score %></h2>
+  <h3>Board change in <%= @seconds %></h3>
   <div id="scores">
-    <h2>Scores</h2>
-    <ol>
+    <h3>Scores</h3>
     <%= Enum.map(@scores, fn(score) -> %>
-      <li><%= score %></li>
+      <div><%= score %></div>
     <% end) %>
-    </ol>
   </div>
   <div id="player">
-    <h2>Your Score: <%= @score %></h2>
-    <h2>Your Words</h2>
+    <h3>Your Words</h3>
     <%= Enum.map(@words, fn(w) -> %>
       <div><%= w %></div>
     <% end) %>

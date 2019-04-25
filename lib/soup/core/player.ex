@@ -77,7 +77,6 @@ defmodule Soup.Player do
   end
 
   def handle_call(:id, _, state) do
-    IO.inspect(state.id)
     {:reply, state.id, state}
   end
 end

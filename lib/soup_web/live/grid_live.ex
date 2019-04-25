@@ -10,7 +10,6 @@ defmodule SoupWeb.GridLive do
   end
 
   def mount(_session, socket) do
-    IO.inspect("Mounting #{socket.id}")
     if connected?(socket), do: SoupWeb.Endpoint.subscribe("soup")
     socket = init_socket(socket)
     SoupWeb.Endpoint.broadcast("soup", "scores", %{scores: PlayerServer.scores()})
@@ -20,8 +19,7 @@ defmodule SoupWeb.GridLive do
 
   def handle_event("letter", value, socket) do
     Player.add_letter(socket.assigns.pid, value)
-    word = Player.word(socket.assigns.pid)
-    {:noreply, assign(socket, :word, word)}
+    {:noreply, assign(socket, :word, Player.word(socket.assigns.pid))}
   end
 
   def handle_event("clear", _, socket) do
@@ -52,13 +50,12 @@ defmodule SoupWeb.GridLive do
     {:noreply, socket}
   end
 
-  def terminate(reason, socket) do
-    IO.inspect(reason, label: :terminate)
+  def terminate(_reason, socket) do
     PlayerServer.remove(socket.assigns.pid)
     SoupWeb.Endpoint.broadcast("soup", "scores", %{scores: PlayerServer.scores()})
   end
 
-  def assign_state(socket) do
+  defp assign_state(socket) do
     state = Player.state(socket.assigns.pid)
     socket = assign(socket, :word, state.word)
     socket = assign(socket, :words, state.words)

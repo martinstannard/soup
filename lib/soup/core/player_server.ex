@@ -7,16 +7,12 @@ defmodule Soup.PlayerServer do
   alias Soup.Player
 
   def find_or_create_player(player_id) do
-    IO.inspect("find or create #{player_id}")
-
     player_id
     |> find_player
     |> add_player(player_id)
   end
 
   defp add_player(nil, player_id) do
-    IO.inspect("NOT FOUND - CREATING")
-
     {:ok, pid} =
       DynamicSupervisor.start_child(
         __MODULE__,
@@ -33,8 +29,6 @@ defmodule Soup.PlayerServer do
 
   defp find_player(id) do
     Enum.find(players(), fn child ->
-      IO.inspect(Player.id(child), label: :player)
-      IO.inspect(id, label: :id)
       Player.id(child) == id
     end)
   end
@@ -46,7 +40,6 @@ defmodule Soup.PlayerServer do
   end
 
   def remove(pid) do
-    IO.inspect("#{inspect(pid)} terminated")
     DynamicSupervisor.terminate_child(__MODULE__, pid)
   end
 
