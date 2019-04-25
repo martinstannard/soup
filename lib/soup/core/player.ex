@@ -34,7 +34,8 @@ defmodule Soup.Player do
      %{
        id: id,
        score: 0,
-       word: ""
+       word: "",
+       words: []
      }}
   end
 
@@ -56,6 +57,7 @@ defmodule Soup.Player do
     new_state = %{
       state
       | score: state.score + String.length(state.word),
+        words: [state.word] ++ state.words,
         word: ""
     }
 
