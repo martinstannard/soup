@@ -2,7 +2,7 @@ defmodule Soup.Grid do
   use GenServer
 
   @sides 5
-
+  @countdown 10
   @letters "EEEEEEEEEEEETTTTTTTTTAAAAAAAAOOOOOOOIIIIIIINNNNNNNSSSSSSSHHHHHHRRRRRRDDDDLLLCCCUUUMMMWWWFFFGGYYPPBBVKJXQZ"
 
   def start_link(_opts) do
@@ -18,9 +18,12 @@ defmodule Soup.Grid do
   end
 
   def init(_) do
+    Process.send_after(self(), :tick, 5000)
+
     {:ok,
      %{
-       grid: generate()
+       grid: generate(),
+       time: @countdown
      }}
   end
 
@@ -31,6 +34,28 @@ defmodule Soup.Grid do
 
   def handle_call(:grid, _, state) do
     {:reply, state.grid, state}
+  end
+
+  def handle_info(:tick, state) do
+    new_state = do_tick(state)
+    IO.inspect(new_state.time)
+    Process.send_after(self(), :tick, 1000)
+    {:noreply, new_state}
+  end
+
+  def do_tick(%{time: 0}) do
+    board = generate()
+    SoupWeb.Endpoint.broadcast("soup", "new_board", %{board: board})
+
+    %{
+      grid: board,
+      time: @countdown
+    }
+  end
+
+  def do_tick(state) do
+    SoupWeb.Endpoint.broadcast("soup", "tick", %{seconds: state.time - 1})
+    %{state | time: state.time - 1}
   end
 
   def generate(sides \\ @sides) do

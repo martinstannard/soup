@@ -6,6 +6,7 @@ defmodule SoupWeb.CountView do
 
   def render(assigns) do
     ~L"""
+    <h2>Time: <%= @seconds %></h2>
     <div class="">
       <%= Enum.map(@grid, fn(row) -> %>
         <div>
@@ -40,6 +41,7 @@ defmodule SoupWeb.CountView do
     socket = assign(socket, :word, "")
     socket = assign(socket, :words, [])
     socket = assign(socket, :score, 0)
+    socket = assign(socket, :seconds, 30)
     socket = assign(socket, :grid, GenServer.call(Board, :grid))
     socket = assign(socket, :pid, PlayerServer.find_or_create_player(socket.id))
 
@@ -53,25 +55,31 @@ defmodule SoupWeb.CountView do
   end
 
   def handle_event("clear", _, socket) do
-    IO.inspect("clear")
     Player.clear(socket.assigns.pid)
     {:noreply, assign(socket, :word, "")}
   end
 
   def handle_event("submit", _, socket) do
-    GenServer.call(Board, :new)
-    Player.submit(socket.assigns.pid)
+    handle_valid(valid?(socket), socket)
     socket = assign_state(socket)
-    SoupWeb.Endpoint.broadcast("soup", "new_board", %{})
     {:noreply, socket}
   end
 
-  def handle_info(%{event: "new_board", payload: _payload}, socket) do
+  def handle_info(%{event: "new_board", payload: payload}, socket) do
     Player.clear(socket.assigns.pid)
-    word = Player.word(socket.assigns.pid)
-    socket = assign(socket, :word, word)
-    socket = assign(socket, :grid, GenServer.call(Board, :grid))
+    socket = assign(socket, :word, "")
+    socket = assign(socket, :grid, payload.board)
     {:noreply, socket}
+  end
+
+  def handle_info(%{event: "tick", payload: payload}, socket) do
+    socket = assign(socket, :seconds, payload.seconds)
+    {:noreply, socket}
+  end
+
+  def terminate(reason, socket) do
+    IO.inspect(reason)
+    PlayerServer.remove(socket.assigns.pid)
   end
 
   def assign_state(socket) do
@@ -80,5 +88,21 @@ defmodule SoupWeb.CountView do
     socket = assign(socket, :words, state.words)
     socket = assign(socket, :score, state.score)
     socket
+  end
+
+  defp valid?(socket) do
+    state = Player.state(socket.assigns.pid)
+
+    GenServer.call(Dict, {:valid?, state.word})
+    |> IO.inspect(label: :valid)
+  end
+
+  defp handle_valid(true, socket) do
+    Player.submit(socket.assigns.pid)
+    Player.clear(socket.assigns.pid)
+  end
+
+  defp handle_valid(_, socket) do
+    Player.clear(socket.assigns.pid)
   end
 end

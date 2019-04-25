@@ -31,6 +31,11 @@ defmodule Soup.PlayerServer do
     |> Enum.map(fn {_, child, _, _} -> child end)
   end
 
+  def remove(pid) do
+    IO.inspect("child terminated")
+    DynamicSupervisor.terminate_child(__MODULE__, pid)
+  end
+
   ###
   # Supervisor API
   ###

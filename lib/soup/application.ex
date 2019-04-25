@@ -12,7 +12,7 @@ defmodule Soup.Application do
       Soup.Repo,
       # Start the endpoint when the application starts
       SoupWeb.Endpoint,
-      {Soup.Counter, []},
+      {Soup.Dict, []},
       {Soup.Grid, []},
       {DynamicSupervisor, strategy: :one_for_one, name: Soup.PlayerServer}
 
