@@ -11,7 +11,11 @@ defmodule Soup.Application do
       # Start the Ecto repository
       Soup.Repo,
       # Start the endpoint when the application starts
-      SoupWeb.Endpoint
+      SoupWeb.Endpoint,
+      {Soup.Counter, []},
+      {Soup.Grid, []},
+      {DynamicSupervisor, strategy: :one_for_one, name: Soup.PlayerServer}
+
       # Starts a worker by calling: Soup.Worker.start_link(arg)
       # {Soup.Worker, arg},
     ]
