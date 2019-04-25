@@ -1,0 +1,2 @@
+defmodule Word do
+end
