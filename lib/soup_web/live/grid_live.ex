@@ -74,6 +74,7 @@ defmodule SoupWeb.GridLive do
 
     with true <- String.length(word) > 3,
          false <- GenServer.call(Board, {:used?, word}),
+         true <- GenServer.call(Board, {:valid_letters?, word}),
          true <- GenServer.call(Dict, {:valid?, word}) do
       true
     else
@@ -93,7 +94,6 @@ defmodule SoupWeb.GridLive do
     socket = put_flash(socket, :info, "Invalid word")
 
     socket
-    |> IO.inspect()
   end
 
   defp init_socket(socket, name) do
@@ -101,7 +101,7 @@ defmodule SoupWeb.GridLive do
     socket = assign(socket, :word, "")
     socket = assign(socket, :words, [])
     socket = assign(socket, :name, Player.name(pid))
-    socket = assign(socket, :seconds, 30)
+    socket = assign(socket, :seconds, 60)
     socket = assign(socket, :scores, PlayerServer.scores())
     socket = assign(socket, :grid, GenServer.call(Board, :grid))
     socket = assign(socket, :pid, pid)

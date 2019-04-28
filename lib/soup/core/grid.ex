@@ -25,6 +25,10 @@ defmodule Soup.Grid do
     GenServer.call(pid, {:used?, word})
   end
 
+  def valid_letters?(pid, word) do
+    GenServer.call(pid, {:valid_letters?, word})
+  end
+
   def init(_) do
     Process.send_after(self(), :tick, 1000)
 
@@ -47,12 +51,15 @@ defmodule Soup.Grid do
 
   def handle_call({:add_word, word}, _, state) do
     new_state = %{state | words: [word] ++ state.words}
-    IO.inspect(new_state, label: :add_word)
     {:reply, new_state, new_state}
   end
 
   def handle_call({:used?, word}, _, state) do
     {:reply, Enum.member?(state.words, word), state}
+  end
+
+  def handle_call({:valid_letters?, word}, _, state) do
+    {:reply, letters_in_grid?(state.grid, word), state}
   end
 
   def handle_call(:words, _, state) do
@@ -95,5 +102,39 @@ defmodule Soup.Grid do
     @letters
     |> String.split("", trim: true)
     |> Enum.random()
+  end
+
+  def letters_in_grid?(grid, word) do
+    letters =
+      word
+      |> String.split("", trim: true)
+
+    grid_letters =
+      grid
+      |> List.flatten()
+
+    letters
+    |> letters_in_list(grid_letters)
+    |> Enum.all?(fn r -> r end)
+  end
+
+  def letters_in_list([], __list) do
+    []
+  end
+
+  def letters_in_list([h | t], list) do
+    [letter_in_list(h, list) | letters_in_list(t, remove_letter_from_list(h, list))]
+  end
+
+  def letter_in_list(letter, list) do
+    list
+    |> Enum.member?(letter)
+  end
+
+  def remove_letter_from_list(letter, list) do
+    case list |> Enum.find_index(fn l -> l == letter end) do
+      nil -> list
+      index -> List.delete_at(list, index)
+    end
   end
 end
