@@ -9,9 +9,9 @@ defmodule SoupWeb.GridLive do
     GridView.render("grid.html", assigns)
   end
 
-  def mount(_session, socket) do
+  def mount(%{"user" => %{"name" => name}}, socket) do
     if connected?(socket), do: SoupWeb.Endpoint.subscribe("soup")
-    socket = init_socket(socket)
+    socket = init_socket(socket, name)
     SoupWeb.Endpoint.broadcast("soup", "scores", %{scores: PlayerServer.scores()})
 
     {:ok, socket}
@@ -96,8 +96,8 @@ defmodule SoupWeb.GridLive do
     |> IO.inspect()
   end
 
-  defp init_socket(socket) do
-    pid = PlayerServer.find_or_create_player(socket.id)
+  defp init_socket(socket, name) do
+    pid = PlayerServer.find_or_create_player(socket.id, name)
     socket = assign(socket, :word, "")
     socket = assign(socket, :words, [])
     socket = assign(socket, :name, Player.name(pid))

@@ -3,7 +3,11 @@ defmodule SoupWeb.PageController do
 
   alias Phoenix.LiveView
 
-  def index(conn, _) do
-    LiveView.Controller.live_render(conn, SoupWeb.GridLive, session: %{})
+  def index(conn, _params) do
+    render(conn, "index.html")
+  end
+
+  def game(conn, params) do
+    LiveView.Controller.live_render(conn, SoupWeb.GridLive, session: params)
   end
 end

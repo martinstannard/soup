@@ -6,15 +6,13 @@ defmodule Soup.PlayerServer do
   use DynamicSupervisor
   alias Soup.Player
 
-  def find_or_create_player(player_id) do
+  def find_or_create_player(player_id, name) do
     player_id
     |> find_player
-    |> add_player(player_id)
+    |> add_player(player_id, name)
   end
 
-  defp add_player(nil, player_id) do
-    name = "Player#{length(players()) + 1}"
-
+  defp add_player(nil, player_id, name) do
     {:ok, pid} =
       DynamicSupervisor.start_child(
         __MODULE__,
@@ -27,7 +25,7 @@ defmodule Soup.PlayerServer do
     pid
   end
 
-  defp add_player(pid, _), do: pid
+  defp add_player(pid, _, _), do: pid
 
   defp find_player(id) do
     Enum.find(players(), fn child ->
