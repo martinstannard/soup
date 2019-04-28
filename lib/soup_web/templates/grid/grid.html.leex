@@ -30,13 +30,13 @@
     <button phx-click="clear">clear</button>
   </div>
   <div id="scores">
-    <h3>Scores</h3>
+    <div class="title">Scores</div>
     <%= Enum.map(@scores, fn(score) -> %>
       <div><%= score %></div>
     <% end) %>
   </div>
-  <div id="player">
-    <h3>Words Played</h3>
+  <div id="words">
+    <div class="title">Played Words</div>
     <%= Enum.map(@words, fn(w) -> %>
       <%= w %>&nbsp;
     <% end) %>
