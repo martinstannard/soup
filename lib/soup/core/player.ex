@@ -1,8 +1,8 @@
 defmodule Soup.Player do
   use GenServer, restart: :transient
 
-  def start_link(id) do
-    GenServer.start_link(__MODULE__, id, [])
+  def start_link({name, id}) do
+    GenServer.start_link(__MODULE__, {name, id}, [])
   end
 
   def add_letter(pid, letter) do
@@ -29,14 +29,19 @@ defmodule Soup.Player do
     GenServer.call(pid, :score)
   end
 
+  def name(pid) do
+    GenServer.call(pid, :name)
+  end
+
   def id(pid) do
     GenServer.call(pid, :id)
   end
 
-  def init(id) do
+  def init({name, id}) do
     {:ok,
      %{
        id: id,
+       name: name,
        score: 0,
        word: "",
        words: []
@@ -73,7 +78,11 @@ defmodule Soup.Player do
   end
 
   def handle_call(:score, _, state) do
-    {:reply, state.score, state}
+    {:reply, "#{state.name} #{state.score}", state}
+  end
+
+  def handle_call(:name, _, state) do
+    {:reply, state.name, state}
   end
 
   def handle_call(:id, _, state) do

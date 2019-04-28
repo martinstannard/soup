@@ -13,12 +13,14 @@ defmodule Soup.PlayerServer do
   end
 
   defp add_player(nil, player_id) do
+    name = "Player#{length(players()) + 1}"
+
     {:ok, pid} =
       DynamicSupervisor.start_child(
         __MODULE__,
         %{
           id: Player,
-          start: {Player, :start_link, [player_id]}
+          start: {Player, :start_link, [{name, player_id}]}
         }
       )
 
@@ -46,7 +48,7 @@ defmodule Soup.PlayerServer do
   def scores do
     players()
     |> Enum.map(fn pid ->
-      "#{inspect(pid)} #{Player.score(pid)}"
+      Player.score(pid)
     end)
   end
 
@@ -55,7 +57,7 @@ defmodule Soup.PlayerServer do
   ###
 
   def start_link(_arg) do
-    Supervisor.start_link(__MODULE__, nil, name: __MODULE__)
+    DynamicSupervisor.start_link(__MODULE__, nil, name: __MODULE__)
   end
 
   def init(_) do
