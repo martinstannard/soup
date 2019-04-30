@@ -21,17 +21,17 @@ header {
   background-color: #9CC4E4;
   border: 3px solid #3A89C9;
   font-family: monospace;
-  font-size: 7em;
+  font-size: 5rem;
   font-weight: 900;
-  line-height: 1.3em;
+  line-height: 6rem;
   padding-left: 0.2em;
   padding-right: 0.2em;
 }
 .word {
   font-family: monospace;
-  font-size: 3em;
+  font-size: 3rem;
   font-weight: 900;
-  line-height: 1.3;
+  line-height: 2.5rem;
   padding-left: 0.2em;
   padding-right: 0.2em;
   min-height: 2em;
@@ -39,7 +39,7 @@ header {
 
 #board {
   float:left;
-  width:50%;
+  width:60%;
   overflow:hidden;
 }
 
@@ -49,3 +49,48 @@ header {
   overflow:hidden;
 } 
 
+@media (min-width: 42.0rem) {
+  .letter {
+    color: #1B325F;
+    background-color: #9CC4E4;
+    border: 3px solid #3A89C9;
+    font-family: monospace;
+    font-size: 5em;
+    font-weight: 900;
+    line-height: 1.3em;
+    padding-left: 0.2em;
+    padding-right: 0.2em;
+  }
+
+  .word {
+    font-family: monospace;
+    font-size: 5rem;
+    font-weight: 900;
+    line-height: 5rem;
+    padding-left: 0.2em;
+    padding-right: 0.2em;
+    min-height: 2em;
+  }
+
+}
+
+@media (min-width: 80.0rem) {
+  .letter {
+    color: #1B325F;
+    background-color: #9CC4E4;
+    border: 3px solid #3A89C9;
+    font-family: monospace;
+    font-size: 8rem;
+    font-weight: 900;
+    line-height: 10.5rem;
+  }
+  .word {
+    font-family: monospace;
+    font-size: 5rem;
+    font-weight: 900;
+    line-height: 4.3rem;
+    min-height: 1.2em;
+    min-width: 4.2em;
+    padding-top: 1em;
+  }
+}
