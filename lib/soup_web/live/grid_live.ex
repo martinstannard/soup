@@ -1,8 +1,7 @@
 defmodule SoupWeb.GridLive do
   use Phoenix.LiveView
 
-  alias Soup.Player
-  alias Soup.PlayerServer
+  alias Soup.{Player, PlayerServer}
   alias SoupWeb.GridView
 
   def render(assigns) do
@@ -28,15 +27,22 @@ defmodule SoupWeb.GridLive do
   end
 
   def handle_event("submit", _, socket) do
-    socket = handle_valid(valid?(socket), socket)
-    socket = assign_state(socket)
-    {:noreply, socket}
+    socket =
+      socket
+      |> valid?
+      |> handle_valid(socket)
+
+    {:noreply, assign_state(socket)}
   end
 
   def handle_info(%{event: "new_board", payload: payload}, socket) do
     Player.clear(socket.assigns.pid)
-    socket = assign(socket, :word, "")
-    socket = assign(socket, :grid, payload.board)
+
+    socket =
+      socket
+      |> assign(:word, "")
+      |> assign(:grid, payload.board)
+
     {:noreply, socket}
   end
 
@@ -98,13 +104,14 @@ defmodule SoupWeb.GridLive do
 
   defp init_socket(socket, name) do
     pid = PlayerServer.find_or_create_player(socket.id, name)
-    socket = assign(socket, :word, "")
-    socket = assign(socket, :words, [])
-    socket = assign(socket, :name, Player.name(pid))
-    socket = assign(socket, :seconds, 60)
-    socket = assign(socket, :scores, PlayerServer.scores())
-    socket = assign(socket, :grid, GenServer.call(Board, :grid))
-    socket = assign(socket, :pid, pid)
+
     socket
+    |> assign(:word, "")
+    |> assign(:words, [])
+    |> assign(:name, Player.name(pid))
+    |> assign(:seconds, 60)
+    |> assign(:scores, PlayerServer.scores())
+    |> assign(:grid, GenServer.call(Board, :grid))
+    |> assign(:pid, pid)
   end
 end
