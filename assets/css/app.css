@@ -49,7 +49,7 @@ header {
   overflow:hidden;
 } 
 
-@media (min-width: 42.0rem) {
+@media (min-width: 40.0rem) {
   .letter {
     color: #1B325F;
     background-color: #9CC4E4;
