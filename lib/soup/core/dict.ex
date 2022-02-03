@@ -1,6 +1,7 @@
 defmodule Soup.Dict do
   use GenServer
 
+  @spec start_link(any) :: :ignore | {:error, any} | {:ok, pid}
   def start_link(_opts) do
     GenServer.start_link(__MODULE__, nil, name: Dict)
   end
@@ -9,6 +10,7 @@ defmodule Soup.Dict do
     GenServer.call(Dict, {:valid?, word})
   end
 
+  @spec init(any) :: {:ok, %{words: [binary]}}
   def init(_) do
     {:ok, %{words: load_dictionary()}}
   end
