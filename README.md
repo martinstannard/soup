@@ -1,5 +1,16 @@
 # Soup
 
+## Installation
+
+Soup requires Erlang 23.
+
+``` sh
+asdf install erlang 23.3.4.9
+cd soup
+asdf local erlang 23.3.4.9
+```
+
+`
 To start your Phoenix server:
 
   * Install dependencies with `mix deps.get`
